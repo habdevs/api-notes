@@ -1,7 +1,11 @@
 import express from 'express';
 import { ApolloServer, gql } from 'apollo-server-express';
+import { MongoClient } from 'mongodb';
 
+const uri = 'mongodb+srv://ahramickih:TOEToCA84ap9a69X@api-notes.rlncm4z.mongodb.net/?retryWrites=true&w=majority&appName=api-notes'
 const port = process.env.PORT || 4000;
+
+const client = new MongoClient(uri);
 
 let notes = [
   {
@@ -21,7 +25,8 @@ let notes = [
   }
 ];
 
-const typeDefs = gql`
+async function startApolloServer() {
+  const typeDefs = gql`
   type Note {
     id: ID
     content: String
@@ -62,11 +67,17 @@ const resolvers = {
   }
 };
 
-const app = express();
-const server = new ApolloServer({ typeDefs, resolvers });
+  const server = new ApolloServer({ typeDefs, resolvers });
+  await server.start();
 
-server.applyMiddleware({ app, path: '/api' });
+  const app = express();
+  server.applyMiddleware({ app, path: '/api' });
 
-app.listen({ port }, () =>
-  console.log(`GraphQL Server running at http://localhost:${port}${server.graphqlPath}`)
-);
+  await client.connect();
+
+  app.listen({ port }, () =>
+    console.log(`GraphQL Server running at http://localhost:${port}${server.graphqlPath}`)
+  );
+}
+
+startApolloServer().catch(error => console.error(error));
