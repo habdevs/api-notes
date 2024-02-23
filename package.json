@@ -1,0 +1,54 @@
+{
+  "name": "api-notes",
+  "version": "1.0.0",
+  "description": "api-notes",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "nodemon src/index.js",
+    "dev": "nodemon src/index.js",
+    "final": "nodemon final/index.js",
+    "seed": "node final/util/seed/index.js",
+    "lint": "eslint \"src/**/*.js\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:habdevs/api-notes.git"
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "**.test.js"
+    ]
+  },
+  "keywords": [],
+  "author": "habdevs",
+  "license": "MIT",
+  "dependencies": {
+    "apollo-server-express": "^2.19.1",
+    "bcrypt": "^5.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-session": "^1.17.2",
+    "graphql": "14.0.0",
+    "graphql-depth-limit": "^1.1.0",
+    "graphql-iso-date": "^3.6.1",
+    "graphql-validation-complexity": "^0.2.4",
+    "helmet": "^4.6.0",
+    "jsonwebtoken": "^8.5.1",
+    "marked": "^0.7.0",
+    "md5": "^2.3.0",
+    "mongoose": "^5.13.2",
+    "nodemon": "^2.0.12",
+    "passport": "^0.4.1",
+    "passport-github2": "^0.1.11"
+  },
+  "devDependencies": {
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "faker": "^5.5.3",
+    "node-fetch": "^2.6.1",
+    "prettier": "^2.5.1"
+  }
+}
