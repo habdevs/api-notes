@@ -48,23 +48,29 @@ async function startApolloServer() {
 const resolvers = {
   Query: {
     hello: () => 'Hello world!',
-		kek: () => 'LOL kek',
-    notes: () => notes,
-    note: (parent, args) => {
-      return notes.find(note => note.id === args.id);
-    }
+    kek: () => 'LOL kek',
+    notes: async () => {
+      const notesCollection = client.db().collection('notes');
+      const notes = await notesCollection.find().toArray();
+      return notes;
+    },
+    note: async (parent, args) => {
+      const notesCollection = client.db().collection('notes');
+      return notesCollection.findOne({ id: args.id });
+    },
   },
   Mutation: {
-    newNote: (parent, args) => {
-      let noteValue = {
-        id: String(notes.length + 1),
+    newNote: async (parent, args) => {
+      const notesCollection = client.db().collection('notes');
+      const noteValue = {
+        id: String((await notesCollection.countDocuments()) + 1),
         content: args.content,
-        author: args.author 
+        author: args.author,
       };
-      notes.push(noteValue);
+      await notesCollection.insertOne(noteValue);
       return noteValue;
-    }
-  }
+    },
+  },
 };
 
   const server = new ApolloServer({ typeDefs, resolvers });
