@@ -1,5 +1,7 @@
-import Post from "./post";
+import Post from './post';
+import Comment from './comment.js';
 
 export const models = {
-	Post
+  Post,
+  Comment,
 };

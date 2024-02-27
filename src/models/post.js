@@ -6,10 +6,12 @@ const postSchema = new mongoose.Schema(
     content: { type: String, required: true },
     tags: { type: String, required: true },
     images: { type: String },
-    author: {
-      type: String,
-      required: true,
-    },
+    author: { type: String, required: true },
+    comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }],
+    shareCount: { type: Number, default: 0 },
+    commentCount: { type: Number, default: 0 },
+    viewCount: { type: Number, default: 0 },
+    smileCount: { type: Number, default: 0 },
   },
   {
     timestamps: true,
