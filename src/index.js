@@ -1,77 +1,84 @@
 import express from 'express';
 import { ApolloServer, gql } from 'apollo-server-express';
-import { MongoClient } from 'mongodb';
+import mongoose from 'mongoose';
+import Post from './models/post.js';
+import Comment from './models/comment.js'; // Предполагается, что ваша модель комментариев находится в файле ./models/comment.js
 
-const uri = 'mongodb+srv://ahramickih:TOEToCA84ap9a69X@api-notes.rlncm4z.mongodb.net/?retryWrites=true&w=majority&appName=api-notes'
+const uri =
+  'mongodb+srv://ahramickih:TOEToCA84ap9a69X@api-posts.rlncm4z.mongodb.net/?retryWrites=true&w=majority&appName=api-posts';
 const port = process.env.PORT || 4000;
-
-const client = new MongoClient(uri);
-
-let notes = [
-  {
-    id: '1',
-    content: 'This is a note',
-    author: 'Bob Harley'
-  },
-  {
-    id: '2',
-    content: 'This is another note',
-    author: 'Harlow Everly'
-  },
-  {
-    id: '3',
-    content: 'Oh hey look, another note!',
-    author: 'Riley Harrison'
-  }
-];
 
 async function startApolloServer() {
   const typeDefs = gql`
-  type Note {
-    id: ID
-    content: String
-    author: String
-  }
+    type Comment {
+      id: ID!
+      text: String!
+      author: String!
+      date: String
+      likes: Int
+    }
 
-  type Query {
-    hello: String
-		kek: String
-    notes: [Note]
-    note(id: ID): Note
-  }
+    type Post {
+      id: ID!
+      title: String!
+      content: String!
+      tags: String!
+      author: String!
+      comments: [Comment]
+      createdAt: String
+    }
 
-  type Mutation {
-    newNote(content: String!, author: String!): Note
-  }
-`;
+    type Query {
+      posts: [Post]
+      post(id: ID!): Post
+    }
 
-const resolvers = {
-  Query: {
-    hello: () => 'Hello world!',
-    kek: () => 'LOL kek',
-    notes: async () => {
-      const notesCollection = client.db().collection('notes');
-      const notes = await notesCollection.find().toArray();
-      return notes;
+    type Mutation {
+      newPost(
+        title: String!
+        content: String!
+        tags: String!
+        author: String!
+      ): Post
+      addComment(postId: ID!, text: String!, author: String!, user: String!): Post
+    }
+  `;
+
+  const resolvers = {
+    Query: {
+      posts: async () => {
+        return await Post.find().populate('comments');
+      },
+      post: async (parent, args) => {
+        return await Post.findById(args.id).populate('comments');
+      },
     },
-    note: async (parent, args) => {
-      const notesCollection = client.db().collection('notes');
-      return notesCollection.findOne({ id: args.id });
+    Mutation: {
+      newPost: async (parent, args) => {
+        const newPost = new Post({
+          title: args.title,
+          content: args.content,
+          tags: args.tags,
+          author: args.author,
+        });
+        return await newPost.save();
+      },
+      addComment: async (parent, args) => {
+        const post = await Post.findById(args.postId);
+        if (!post) {
+          throw new Error('Post not found');
+        }
+        const newComment = new Comment({
+          text: args.text,
+          author: args.author,
+          user: args.user,
+        });
+        post.comments.push(newComment);
+        await newComment.save();
+        return await post.save();
+      },
     },
-  },
-  Mutation: {
-    newNote: async (parent, args) => {
-      const notesCollection = client.db().collection('notes');
-      const noteValue = {
-        id: String((await notesCollection.countDocuments()) + 1),
-        content: args.content,
-        author: args.author,
-      };
-      await notesCollection.insertOne(noteValue);
-      return noteValue;
-    },
-  },
-};
+  };
 
   const server = new ApolloServer({ typeDefs, resolvers });
   await server.start();
@@ -79,10 +86,15 @@ const resolvers = {
   const app = express();
   server.applyMiddleware({ app, path: '/api' });
 
-  await client.connect();
+  await mongoose.connect(uri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
 
   app.listen({ port }, () =>
-    console.log(`GraphQL Server running at http://localhost:${port}${server.graphqlPath}`)
+    console.log(
+      `GraphQL Server running at http://localhost:${port}${server.graphqlPath}`,
+    ),
   );
 }
 
