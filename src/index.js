@@ -17,6 +17,7 @@ async function startApolloServer() {
     resolvers: {
       Query: queryResolvers.Query,
       Mutation: mutationResolvers.Mutation,
+      
     },
     context: async ({ req }) => {
       // Добавление моделей в контекст

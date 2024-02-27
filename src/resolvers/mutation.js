@@ -26,6 +26,17 @@ const resolvers = {
       await newComment.save();
       return await post.save();
     },
+    updatePost: async (parent, { id, content: newContent }) =>
+      (await Post.findByIdAndUpdate(
+        id,
+        { content: newContent },
+        { new: true },
+      )) ??
+      (() => {
+        throw new Error('Post not found');
+      })(),
+    deletePost: async (parent, args) =>
+      !!(await Post.findByIdAndDelete(args.id)),
   },
 };
 
