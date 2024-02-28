@@ -2,11 +2,11 @@ import Post from '../models/post.js';
 
 const resolvers = {
   Query: {
-    posts: async () => {
-      return await Post.find().populate('comments');
+    posts: async (parent, args, { models }) => {
+      return await Post.find();
     },
-    post: async (parent, args) => {
-      return await Post.findById(args.id).populate('comments');
+    post: async (parent, args, { models }) => {
+      return await Post.findById(args.id);
     },
   },
 };

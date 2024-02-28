@@ -1,27 +1,21 @@
 import { gql } from 'apollo-server-express';
 
 const typeDefs = gql`
-  type Comment {
-    id: ID!
-    text: String!
-    author: String!
-    date: String
-    likes: Int
+  scalar DateTime
+
+  type Query {
+    posts: [Post]
+    post(id: ID!): Post
   }
 
   type Post {
     id: ID!
     title: String!
     content: String!
-    tags: String!
+    tags: String
     author: String!
-    comments: [Comment]
-    createdAt: String
-  }
-
-  type Query {
-    posts: [Post]
-    post(id: ID!): Post
+    createdAt: DateTime!
+    updatedAt: DateTime!
   }
 
   type Mutation {
@@ -38,12 +32,6 @@ const typeDefs = gql`
     deletePost(
       id: ID!
     ): Boolean
-    addComment(
-      postId: ID!
-      text: String!
-      author: String!
-      user: String!
-    ): Post
   }
 `;
 

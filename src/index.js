@@ -1,7 +1,6 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import { ApolloServer, gql } from 'apollo-server-express';
-import Comment from './models/comment.js';
 import Post from './models/post.js';
 import typeDefs from './schema.js';
 import queryResolvers from './resolvers/query.js';
@@ -17,14 +16,12 @@ async function startApolloServer() {
     resolvers: {
       Query: queryResolvers.Query,
       Mutation: mutationResolvers.Mutation,
-      
     },
     context: async ({ req }) => {
       // Добавление моделей в контекст
       return {
         models: {
           Post,
-          Comment,
         },
         // user,
       };
