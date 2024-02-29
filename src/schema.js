@@ -14,8 +14,8 @@ const typeDefs = gql`
     content: String!
     tags: String
     author: String!
-    createdAt: DateTime!
-    updatedAt: DateTime!
+    createdAt: String!
+    updatedAt: String!
   }
 
   type Mutation {
