@@ -1,88 +1,47 @@
 import express from 'express';
+import mongoose from 'mongoose';
 import { ApolloServer, gql } from 'apollo-server-express';
-import { MongoClient } from 'mongodb';
+import Post from './models/post.js';
+import typeDefs from './schema.js';
+import queryResolvers from './resolvers/query.js';
+import mutationResolvers from './resolvers/mutation.js';
 
-const uri = 'mongodb+srv://ahramickih:TOEToCA84ap9a69X@api-notes.rlncm4z.mongodb.net/?retryWrites=true&w=majority&appName=api-notes'
+const uri =
+  'mongodb+srv://ahramickih:TOEToCA84ap9a69X@api-posts.rlncm4z.mongodb.net/?retryWrites=true&w=majority&appName=api-posts';
 const port = process.env.PORT || 4000;
 
-const client = new MongoClient(uri);
-
-let notes = [
-  {
-    id: '1',
-    content: 'This is a note',
-    author: 'Bob Harley'
-  },
-  {
-    id: '2',
-    content: 'This is another note',
-    author: 'Harlow Everly'
-  },
-  {
-    id: '3',
-    content: 'Oh hey look, another note!',
-    author: 'Riley Harrison'
-  }
-];
-
 async function startApolloServer() {
-  const typeDefs = gql`
-  type Note {
-    id: ID
-    content: String
-    author: String
-  }
-
-  type Query {
-    hello: String
-		kek: String
-    notes: [Note]
-    note(id: ID): Note
-  }
-
-  type Mutation {
-    newNote(content: String!, author: String!): Note
-  }
-`;
-
-const resolvers = {
-  Query: {
-    hello: () => 'Hello world!',
-    kek: () => 'LOL kek',
-    notes: async () => {
-      const notesCollection = client.db().collection('notes');
-      const notes = await notesCollection.find().toArray();
-      return notes;
+  const server = new ApolloServer({
+    typeDefs,
+    resolvers: {
+      Query: queryResolvers.Query,
+      Mutation: mutationResolvers.Mutation,
     },
-    note: async (parent, args) => {
-      const notesCollection = client.db().collection('notes');
-      return notesCollection.findOne({ id: args.id });
-    },
-  },
-  Mutation: {
-    newNote: async (parent, args) => {
-      const notesCollection = client.db().collection('notes');
-      const noteValue = {
-        id: String((await notesCollection.countDocuments()) + 1),
-        content: args.content,
-        author: args.author,
+    context: async ({ req }) => {
+      // Добавление моделей в контекст
+      return {
+        models: {
+          Post,
+        },
+        // user,
       };
-      await notesCollection.insertOne(noteValue);
-      return noteValue;
     },
-  },
-};
+  });
 
-  const server = new ApolloServer({ typeDefs, resolvers });
   await server.start();
 
   const app = express();
   server.applyMiddleware({ app, path: '/api' });
 
-  await client.connect();
+  await mongoose.connect(uri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
 
   app.listen({ port }, () =>
-    console.log(`GraphQL Server running at http://localhost:${port}${server.graphqlPath}`)
+    console.log(
+      `GraphQL Server running at http://localhost:${port}${server.graphqlPath}`,
+    ),
   );
 }
 
