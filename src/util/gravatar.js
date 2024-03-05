@@ -7,4 +7,4 @@ const gravatar = email => {
   return `https://www.gravatar.com/avatar/${hash}.jpg?d=identicon`;
 };
 
-module.exports = gravatar;
+export default gravatar;

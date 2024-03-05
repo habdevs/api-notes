@@ -17,7 +17,13 @@ const typeDefs = gql`
     createdAt: DateTime!
     updatedAt: DateTime!
   }
-
+type User {
+    id: ID!
+    username: String!
+    email: String!
+    avatar: String!
+    posts: [Post!]!
+  }
   type Mutation {
     newPost(
       title: String!
@@ -32,6 +38,11 @@ const typeDefs = gql`
     deletePost(
       id: ID!
     ): Boolean
+    signUp(
+      username: String!
+      email: String!
+      password: String!
+    ): String
   }
 `;
 

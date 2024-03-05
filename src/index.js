@@ -2,6 +2,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import { ApolloServer, gql } from 'apollo-server-express';
 import Post from './models/post.js';
+import User from './models/user.js';
 import typeDefs from './schema.js';
 import queryResolvers from './resolvers/query.js';
 import mutationResolvers from './resolvers/mutation.js';
@@ -22,6 +23,7 @@ async function startApolloServer() {
       return {
         models: {
           Post,
+          User
         },
         // user,
       };
@@ -31,6 +33,7 @@ async function startApolloServer() {
   await server.start();
 
   const app = express();
+
   server.applyMiddleware({ app, path: '/api' });
 
   await mongoose.connect(uri, {
