@@ -43,6 +43,11 @@ type User {
       email: String!
       password: String!
     ): String
+    signIn(
+      username: String!
+      email: String!
+      password: String!
+    ): String
   }
 `;
 

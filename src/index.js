@@ -6,6 +6,20 @@ import User from './models/user.js';
 import typeDefs from './schema.js';
 import queryResolvers from './resolvers/query.js';
 import mutationResolvers from './resolvers/mutation.js';
+import jwt from 'jsonwebtoken';
+
+const getUser = async token => {
+  console.log('Token:', token);
+  if (token) {
+    try {
+      return await jwt.verify(token, process.env.JWT_SECRET);
+    } catch (err) {
+      throw new AuthenticationError(
+        'Your session expired. Sign in again.',
+      );
+    }
+  }
+};
 
 const uri =
   'mongodb+srv://ahramickih:TOEToCA84ap9a69X@api-posts.rlncm4z.mongodb.net/?retryWrites=true&w=majority&appName=api-posts';
@@ -19,15 +33,19 @@ async function startApolloServer() {
       Mutation: mutationResolvers.Mutation,
     },
     context: async ({ req }) => {
+      const token = req.headers.authorization;
+      const user = await getUser(token);
+      console.log('USER', user)
       // Добавление моделей в контекст
       return {
         models: {
           Post,
           User
         },
-        // user,
+        user
       };
     },
+    introspection: true,
   });
 
   await server.start();
