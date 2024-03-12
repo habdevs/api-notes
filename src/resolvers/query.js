@@ -23,7 +23,7 @@ const resolvers = {
 
       if (posts.length > limit) {
         hasNextPage = true;
-        posts.pop(); // Убрать дополнительный элемент, который не нужен
+        posts.pop();
       }
 
       return {
