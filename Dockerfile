@@ -26,4 +26,4 @@ COPY nginx.conf /etc/nginx/nginx.conf
 EXPOSE 80
 
 # Запустите Nginx и Node.js приложение
-CMD ["nginx", "-g", "daemon off;"] && node src/index.js
+CMD ["sh", "-c", "nginx -g 'daemon off;' & node src/index.js"]
