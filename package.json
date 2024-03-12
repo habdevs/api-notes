@@ -6,7 +6,8 @@
   "main": ".eslintrc.js",
   "scripts": {
     "dev": "nodemon src/index.js",
-    "build": "nodemon src/index.js",
+    "build": "npm install && npm run build:prod",
+    "build:prod": "node src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
