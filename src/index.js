@@ -72,7 +72,7 @@ async function startApolloServer() {
     useUnifiedTopology: true,
   });
 
-  app.listen({ port }, () =>
+  app.listen({ port, host: '0.0.0.0' }, () =>
     console.log(
       `GraphQL Server running at http://localhost:${port}${server.graphqlPath}`,
     ),
