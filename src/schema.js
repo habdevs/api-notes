@@ -3,9 +3,19 @@ import { gql } from 'apollo-server-express';
 const typeDefs = gql`
   scalar DateTime
 
+  type PostFeed {
+    posts: [Post]!
+    cursor: String!
+    hasNextPage: Boolean!
+    totalCount: Int!
+  }
+  
   type Query {
     posts: [Post]
     post(id: ID!): Post
+    user(username: String!): User users: [User!]!
+    me: User!
+    postFeed(cursor: String): PostFeed
   }
 
   type Post {
@@ -17,7 +27,13 @@ const typeDefs = gql`
     createdAt: String!
     updatedAt: String!
   }
-
+  type User {
+    id: ID!
+    username: String!
+    email: String!
+    avatar: String!
+    posts: [Post!]!
+  }
   type Mutation {
     newPost(
       title: String!
@@ -32,6 +48,16 @@ const typeDefs = gql`
     deletePost(
       id: ID!
     ): Boolean
+    signUp(
+      username: String!
+      email: String!
+      password: String!
+    ): String
+    signIn(
+      username: String!
+      email: String!
+      password: String!
+    ): String
   }
 `;
 
