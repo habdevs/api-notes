@@ -25,5 +25,8 @@ COPY nginx.conf /etc/nginx/nginx.conf
 # Откройте порт 80
 EXPOSE 80
 
-# Запустите Nginx и Node.js приложение
-CMD ["sh", "-c", "nginx -g 'daemon off;' & node src/index.js"]
+# Установите pm2 глобально
+RUN npm install -g pm2
+
+# Запустите Nginx и Node.js приложение с помощью pm2
+CMD ["sh", "-c", "nginx -g 'daemon off;' & pm2-runtime start pm2.config.js"]
