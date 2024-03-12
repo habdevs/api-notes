@@ -1,5 +1,9 @@
 import express from 'express';
 import mongoose from 'mongoose';
+import helmet from 'helmet';
+import cors from 'cors';
+import depthLimit from 'graphql-depth-limit'
+import { createComplexityLimitRule } from 'graphql-validation-complexity';
 import { ApolloServer, gql } from 'apollo-server-express';
 import Post from './models/post.js';
 import User from './models/user.js';
@@ -32,6 +36,12 @@ async function startApolloServer() {
       Query: queryResolvers.Query,
       Mutation: mutationResolvers.Mutation,
     },
+    validationRules: [
+      depthLimit(5),
+      createComplexityLimitRule(1000, {
+        on: 'QUERY',
+      }),
+    ],
     context: async ({ req }) => {
       const token = req.headers.authorization;
       const user = await getUser(token);
@@ -51,6 +61,9 @@ async function startApolloServer() {
   await server.start();
 
   const app = express();
+
+  app.use(helmet());
+  app.use(cors());
 
   server.applyMiddleware({ app, path: '/api' });
 
