@@ -1,27 +1,29 @@
-# Используем образ Node.js для сборки
-FROM node:16 as builder
+# Используйте официальный образ Node.js в качестве базового
+FROM node:16
 
+# Установите Nginx
+RUN apt-get update && apt-get install -y nginx
+
+# Создайте рабочую директорию для приложения
 WORKDIR /usr/src/app
 
+# Скопируйте package.json и package-lock.json
 COPY package*.json ./
 
-# Устанавливаем зависимости
+# Установите зависимости
 RUN npm install
 
-# Копируем все файлы
+# Скопируйте исходный код приложения
 COPY . .
 
-# Строим приложение
+# Соберите приложение
 RUN npm run build
 
-# Создаем новый образ для Nginx
-FROM nginx:latest
+# Настройте Nginx
+COPY nginx.conf /etc/nginx/nginx.conf
 
-# Копируем статические файлы из предыдущего образа (Node.js)
-COPY --from=builder /usr/src/app/build /usr/share/nginx/html
-
-# Копируем файл конфигурации Nginx
-COPY nginx/default.conf /etc/nginx/conf.d/default.conf
-
-# Порт, который будет слушать Nginx
+# Откройте порт 80
 EXPOSE 80
+
+# Запустите Nginx и Node.js приложение
+CMD ["nginx", "-g", "daemon off;"]
