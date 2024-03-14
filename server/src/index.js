@@ -5,6 +5,7 @@ import cors from 'cors';
 import depthLimit from 'graphql-depth-limit'
 import { createComplexityLimitRule } from 'graphql-validation-complexity';
 import { ApolloServer, gql } from 'apollo-server-express';
+import { ApolloServerPluginInlineTrace } from "apollo-server-core";
 import Post from './models/post.js';
 import User from './models/user.js';
 import typeDefs from './schema.js';
@@ -56,6 +57,7 @@ async function startApolloServer() {
       };
     },
     introspection: true,
+    plugins: [ApolloServerPluginInlineTrace()],
   });
 
   await server.start();
@@ -65,7 +67,7 @@ async function startApolloServer() {
   app.use(helmet());
   app.use(cors());
 
-  server.applyMiddleware({ app, path: '/api' });
+  server.applyMiddleware({ app, path: '/graphql' });
 
   await mongoose.connect(uri, {
     useNewUrlParser: true,
