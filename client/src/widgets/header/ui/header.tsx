@@ -8,8 +8,7 @@ export const Header = ({ ...props }: props) => {
 			<div className='flex items-center gap-4'>
 				<Button
 					variant='primary'
-					size='icon'
-					className='w-8 h-8'
+					size='default'
 					onClick={() => console.log('HEADER')}
 				>
 					BTN HEADER
