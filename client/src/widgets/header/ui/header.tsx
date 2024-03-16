@@ -8,14 +8,16 @@ export const Header = ({ ...props }: props) => {
 		<header className='bg-primary text-white py-4 px-6 flex items-center justify-between'>
 			<div className='flex items-center'>
 				<Logo />
-				<span className='text-lg font-semibold'>admin-page</span>{' '}
+				<span className='text-lg font-semibold lg:flex hidden'>
+					habdev-admin
+				</span>{' '}
 			</div>
 
 			<nav>
 				<ul className='flex items-center space-x-4'>
 					<li>
 						<a href='#' className='hover:text-gray-300'>
-							About
+							Create
 						</a>
 					</li>
 					<li>
