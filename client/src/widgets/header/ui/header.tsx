@@ -1,5 +1,5 @@
 'use client';
-import Logo from '@/shared/ui/logo/logo';
+import Logo from '@/shared/ui/logo';
 
 interface props {}
 
@@ -16,7 +16,7 @@ export const Header = ({ ...props }: props) => {
 			<nav>
 				<ul className='flex items-center space-x-4'>
 					<li>
-						<a href='#' className='hover:text-gray-300'>
+						<a href='/create' className='hover:text-gray-300'>
 							Create
 						</a>
 					</li>

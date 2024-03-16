@@ -1,6 +1,6 @@
 'use client';
 import { usePostsQuery } from '@/shared/api/use-post-query';
-import { Button } from '@/shared/ui/button/button';
+import { Button } from '@/shared/ui/button';
 import { useState } from 'react';
 
 export default function Home() {
