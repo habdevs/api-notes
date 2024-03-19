@@ -1,11 +1,11 @@
 import { gql, useMutation } from '@apollo/client';
 
-interface SignInData {
+export interface SignInData {
 	username: string;
 	password: string;
 }
 
-interface SignInResponse {
+export interface SignInResponse {
 	signIn: string;
 }
 
