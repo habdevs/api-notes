@@ -21,8 +21,8 @@ export const Header = ({ ...props }: props) => {
 						</a>
 					</li>
 					<li>
-						<a href='#' className='hover:text-gray-300'>
-							Services
+						<a href='/login' className='hover:text-gray-300'>
+							Login
 						</a>
 					</li>
 					<li>

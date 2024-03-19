@@ -25,10 +25,8 @@ const CreatePost: React.FC = () => {
 				variables: formData,
 			});
 			console.log('New post created:', data.newPost);
-			// Добавьте здесь дополнительную логику для обработки успешного создания поста
 		} catch (error) {
 			console.error('Error creating post:', error);
-			// Добавьте здесь логику для обработки ошибок
 		}
 	};
 
