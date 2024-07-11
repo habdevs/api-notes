@@ -1,5 +1,5 @@
 {
   "dependencies": {
-    "@radix-ui/react-form": "^0.0.3"
+    "@radix-ui/react-form": "^0.1.0"
   }
 }
